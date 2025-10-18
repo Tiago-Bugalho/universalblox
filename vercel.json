@@ -6,6 +6,7 @@
   ],
   "routes": [
     { "src": "/scripts/(.*)", "dest": "/api/scripts?id=$1" },
-    { "src": "/publicar", "dest": "/api/publicar" }
+    { "src": "/publicar", "dest": "/api/publicar" },
+    { "src": "/", "dest": "/public/index.html" }
   ]
 }
