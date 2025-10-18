@@ -3,41 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pesquisar Scripts - Universal Blox</title>
+<title>Pesquisar | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family:'Inter',sans-serif; background:linear-gradient(270deg,#f7971e,#ffd200,#34e89e,#0f3443); background-size:800% 800%; animation:gradientBG 25s ease infinite; color:white; display:flex; flex-direction:column; align-items:center; padding:30px;}
-@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-h1 { font-size:2.5rem; margin-bottom:20px; text-shadow:2px 2px 12px #000;}
-input { width:90%; padding:12px; border-radius:20px; font-family:monospace; font-size:16px; background-color:#111; color:#00ff99; border:3px solid #ff6ec4; box-shadow:0 5px 15px rgba(0,0,0,0.5); margin-bottom:15px;}
-button { padding:12px 25px; border-radius:20px; font-weight:bold; font-size:16px; background:linear-gradient(135deg,#ff6ec4,#7873f5); color:white; cursor:pointer; transition:0.3s; box-shadow:0 5px 15px rgba(0,0,0,0.5);}
-button:hover { transform:scale(1.05) rotate(-1deg); box-shadow:0 10px 25px rgba(0,0,0,0.7);}
-.card { background-color:#111; border-radius:20px; padding:15px; width:90%; margin-bottom:15px; box-shadow:0 5px 15px rgba(0,0,0,0.5);}
-.card a { color:#00ff99; font-weight:bold; text-decoration:none;}
-.card a:hover { text-decoration:underline;}
+body {font-family:'Inter',sans-serif; background:#222; color:#fff; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:20px;}
+input {width:80%; margin:10px 0; padding:10px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
+button {padding:10px 20px; border-radius:10px; background:linear-gradient(135deg,#ff6ec4,#7873f5); cursor:pointer; color:#fff; font-weight:bold; margin-top:10px;}
+button:hover{transform:scale(1.05);}
+#resultados{margin-top:20px;width:80%;}
+.result{background:rgba(255,255,255,0.1);padding:10px;margin:5px 0;border-radius:10px;}
+.result a{color:#fff;text-decoration:underline;}
 </style>
 </head>
 <body>
 
 <h1>Pesquisar Scripts</h1>
-<input id="searchInput" placeholder="Digite o nome do script ou jogo">
-<button id="searchBtn">Pesquisar</button>
-<div id="results"></div>
+<input type="text" id="pesquisaInput" placeholder="Nome do Script">
+<button id="pesquisarBtn">Pesquisar</button>
+<div id="resultados"></div>
 
 <script>
-const scriptsDB = JSON.parse(localStorage.getItem('scriptsDB') || '[]');
+async function pesquisar(nome){
+  const res=await fetch(`/api/pesquisar?nome=${encodeURIComponent(nome)}`);
+  return res.json();
+}
 
-document.getElementById('searchBtn').addEventListener('click', function(){
-  const termo = document.getElementById('searchInput').value.toLowerCase();
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = '';
-  const encontrados = scriptsDB.filter(s => s.nome.toLowerCase().includes(termo) || s.jogo.toLowerCase().includes(termo));
-  if(encontrados.length===0){ resultsDiv.textContent='Nenhum script encontrado.'; return; }
-  encontrados.forEach(s => {
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML = `<strong>${s.nome}</strong> [${s.jogo}]<br>${s.descricao}<br>Loadstring:<br><code>${s.loadstring || ''}</code><br>ID: ${s.id}`;
-    resultsDiv.appendChild(card);
+document.getElementById('pesquisarBtn').addEventListener('click',async()=>{
+  const termo=document.getElementById('pesquisaInput').value.trim();
+  if(!termo){alert('Digite algo'); return;}
+  const data=await pesquisar(termo);
+  const resultadosDiv=document.getElementById('resultados');
+  resultadosDiv.innerHTML='';
+  data.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='result';
+    div.innerHTML=`<strong>${s.nome}</strong> (${s.jogo})<br>${s.descricao}<br>
+    <a href="/api/abrir?id=${s.id}" target="_blank">Abrir Script</a><br>
+    Loadstring: <code>${s.loadstring}</code>`;
+    resultadosDiv.appendChild(div);
   });
 });
 </script>

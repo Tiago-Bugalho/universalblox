@@ -3,60 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Publicar Script - Universal Blox</title>
+<title>Publicar Script | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family:'Inter',sans-serif; background:linear-gradient(270deg,#ff512f,#dd2476,#24c6dc,#514a9d); background-size:800% 800%; animation:gradientBG 25s ease infinite; color:white; display:flex; flex-direction:column; align-items:center; padding:30px;}
-@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-h1 { font-size:2.5rem; margin-bottom:20px; text-shadow:2px 2px 12px #000;}
-input,textarea,select { width:90%; padding:12px; margin-bottom:15px; border-radius:20px; font-family:monospace; font-size:16px; background-color:#111; color:#00ff99; border:3px solid #ff6ec4; box-shadow:0 5px 15px rgba(0,0,0,0.5);}
-button { padding:15px 30px; border-radius:20px; font-weight:bold; font-size:18px; background:linear-gradient(135deg,#ff6ec4,#7873f5); color:white; cursor:pointer; transition:0.3s; box-shadow:0 5px 15px rgba(0,0,0,0.5);}
-button:hover { transform:scale(1.1) rotate(-2deg); box-shadow:0 10px 25px rgba(0,0,0,0.7);}
+body {font-family:'Inter',sans-serif; background:#1a1a1a; color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;}
+input, textarea, select {width:80%; margin:10px 0; padding:10px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
+button {padding:10px 20px; border-radius:10px; background:linear-gradient(135deg,#ff6ec4,#7873f5); cursor:pointer; color:#fff; font-weight:bold; margin-top:10px;}
+button:hover{transform:scale(1.05);}
 </style>
 </head>
 <body>
 
 <h1>Publicar Script</h1>
-
-<form id="publicarForm">
-  <textarea id="loadstring" placeholder='Loadstring: loadstring(game:HttpGet("URL"))()' required></textarea>
-  <input type="text" id="nome" placeholder="Nome do Script" required>
-  <select id="jogo">
-    <option value="Universal">Universal</option>
-    <option value="Outro">Outro</option>
-  </select>
-  <input type="text" id="nomeOutroJogo" placeholder="Nome do Jogo" style="display:none; margin-top:10px;">
-  <textarea id="descricao" placeholder="Descrição do Script"></textarea>
-  <button type="submit">Publicar</button>
-</form>
+<input type="text" id="nome" placeholder="Nome do Script">
+<select id="jogo">
+  <option value="Universal">Universal</option>
+  <option value="Roblox">Roblox</option>
+</select>
+<textarea id="descricao" placeholder="Descrição do Script" rows="4"></textarea>
+<textarea id="content" placeholder="Conteúdo do Script" rows="6"></textarea>
+<button id="publicarBtn">Publicar</button>
 
 <script>
-const scriptsDB = JSON.parse(localStorage.getItem('scriptsDB') || '[]');
-const selectJogo = document.getElementById('jogo');
-const inputOutro = document.getElementById('nomeOutroJogo');
+async function publicarScript(nome, jogo, descricao, content){
+  const res = await fetch('/api/publicar', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({nome,jogo,descricao,content})
+  });
+  return res.json();
+}
 
-selectJogo.addEventListener('change', function(){ inputOutro.style.display = this.value==='Outro'?'block':'none'; });
-
-document.getElementById('publicarForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const loadstring = document.getElementById('loadstring').value.trim();
-  const nome = document.getElementById('nome').value.trim();
-  let jogo = selectJogo.value;
-  if(jogo==='Outro'){ jogo = inputOutro.value.trim(); if(!jogo){ alert('Digite o nome do jogo!'); return; } }
-  const descricao = document.getElementById('descricao').value.trim();
-
-  for(let i=scriptsDB.length-1;i>=0;i--){
-    if(scriptsDB[i].content && !scriptsDB[i].nome){
-      scriptsDB[i].nome = nome;
-      scriptsDB[i].jogo = jogo;
-      scriptsDB[i].descricao = descricao;
-      scriptsDB[i].loadstring = loadstring;
-      break;
-    }
-  }
-  localStorage.setItem('scriptsDB', JSON.stringify(scriptsDB));
-  alert(`Script "${nome}" publicado com sucesso!`);
-  window.location.href='index.html';
+document.getElementById('publicarBtn').addEventListener('click',async()=>{
+  const nome=document.getElementById('nome').value.trim();
+  const jogo=document.getElementById('jogo').value;
+  const descricao=document.getElementById('descricao').value.trim();
+  const content=document.getElementById('content').value.trim();
+  if(!nome||!content){alert('Nome e conteúdo obrigatórios'); return;}
+  try{
+    const data=await publicarScript(nome,jogo,descricao,content);
+    alert(`Script publicado! ID: ${data.id}`);
+    window.location.href='index.html';
+  }catch(e){console.error(e); alert('Erro ao publicar');}
 });
 </script>
 
