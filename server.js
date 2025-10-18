@@ -6,9 +6,11 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// URL pública do site (substitua se necessário ou defina no Render como variável HOST_URL)
+const HOST_URL = process.env.HOST_URL || 'https://universalblox.onrender.com';
+
 // Pastas públicas
 app.use(express.static('public'));
-app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 app.use(bodyParser.json());
 
 // Criar pastas/arquivo se não existirem
@@ -32,8 +34,10 @@ app.post('/api/publicar', (req, res) => {
   const fileName = `script_${id}.html`;
   const filePath = path.join(scriptsDir, fileName);
 
+  // Salva o conteúdo puro do script
   fs.writeFileSync(filePath, content, 'utf8');
 
+  // Salva metadados
   const scriptsData = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
   scriptsData.push({
     id,
@@ -41,7 +45,7 @@ app.post('/api/publicar', (req, res) => {
     nome,
     jogo,
     descricao,
-    loadstring: `loadstring(game:HttpGet("/scripts/${fileName}"))()`
+    loadstring: `loadstring(game:HttpGet("${HOST_URL}/api/abrir?id=${id}"))()`
   });
   fs.writeFileSync(metadataFile, JSON.stringify(scriptsData, null, 2));
 
@@ -70,4 +74,4 @@ app.get('/api/pesquisar', (req, res) => {
   res.json(resultados);
 });
 
-app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando em ${HOST_URL} (porta ${PORT})`));
