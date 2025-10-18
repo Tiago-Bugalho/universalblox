@@ -6,45 +6,59 @@
 <title>Publicar Script | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body {font-family:'Inter',sans-serif; background:#1a1a1a; color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;}
-input, textarea, select {width:80%; margin:10px 0; padding:10px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
-button {padding:10px 20px; border-radius:10px; background:linear-gradient(135deg,#ff6ec4,#7873f5); cursor:pointer; color:#fff; font-weight:bold; margin-top:10px;}
-button:hover{transform:scale(1.05);}
+body {font-family:'Inter',sans-serif; background:#222; color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;}
+input, textarea, select {width:80%; padding:12px; margin:8px 0; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#fff; font-size:16px;}
+button {padding:15px 30px; border-radius:15px; background:linear-gradient(135deg,#ff6ec4,#7873f5); font-weight:bold; color:#fff; cursor:pointer; font-size:16px; transition:0.3s;}
+button:hover {transform:scale(1.05);}
+#resultado{margin-top:20px; color:#fff;}
 </style>
 </head>
 <body>
 
 <h1>Publicar Script</h1>
+
 <input type="text" id="nome" placeholder="Nome do Script">
 <select id="jogo">
   <option value="Universal">Universal</option>
-  <option value="Roblox">Roblox</option>
+  <option value="Outro Jogo">Outro Jogo</option>
 </select>
-<textarea id="descricao" placeholder="Descrição do Script" rows="4"></textarea>
-<textarea id="content" placeholder="Conteúdo do Script" rows="6"></textarea>
+<textarea id="descricao" placeholder="Descrição do Script"></textarea>
+<textarea id="conteudo" placeholder="Digite seu script aqui..."></textarea>
+<br>
 <button id="publicarBtn">Publicar</button>
+<div id="resultado"></div>
 
 <script>
-async function publicarScript(nome, jogo, descricao, content){
+async function publicarScript(content, nome, jogo, descricao) {
   const res = await fetch('/api/publicar', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({nome,jogo,descricao,content})
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({content, nome, jogo, descricao})
   });
   return res.json();
 }
 
-document.getElementById('publicarBtn').addEventListener('click',async()=>{
-  const nome=document.getElementById('nome').value.trim();
-  const jogo=document.getElementById('jogo').value;
-  const descricao=document.getElementById('descricao').value.trim();
-  const content=document.getElementById('content').value.trim();
-  if(!nome||!content){alert('Nome e conteúdo obrigatórios'); return;}
-  try{
-    const data=await publicarScript(nome,jogo,descricao,content);
-    alert(`Script publicado! ID: ${data.id}`);
-    window.location.href='index.html';
-  }catch(e){console.error(e); alert('Erro ao publicar');}
+document.getElementById('publicarBtn').addEventListener('click', async ()=>{
+  const nome = document.getElementById('nome').value.trim() || 'Sem Nome';
+  const jogo = document.getElementById('jogo').value;
+  const descricao = document.getElementById('descricao').value.trim();
+  const conteudo = document.getElementById('conteudo').value.trim();
+  
+  if(!conteudo){ alert('Digite o script!'); return; }
+
+  try {
+    const data = await publicarScript(conteudo, nome, jogo, descricao);
+    document.getElementById('resultado').innerHTML = `
+      Script publicado com sucesso!<br>
+      ID: <strong>${data.id}</strong><br>
+      <a href="/api/abrir?id=${data.id}" target="_blank" style="color:#fff;text-decoration:underline;">
+        Abrir Script
+      </a>
+    `;
+  } catch(err) {
+    console.error(err);
+    alert('Erro ao publicar o script.');
+  }
 });
 </script>
 

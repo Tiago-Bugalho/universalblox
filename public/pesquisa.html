@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pesquisar | Universal Blox</title>
+<title>Pesquisar Scripts | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 body {font-family:'Inter',sans-serif; background:#222; color:#fff; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:20px;}
-input {width:80%; margin:10px 0; padding:10px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
-button {padding:10px 20px; border-radius:10px; background:linear-gradient(135deg,#ff6ec4,#7873f5); cursor:pointer; color:#fff; font-weight:bold; margin-top:10px;}
-button:hover{transform:scale(1.05);}
-#resultados{margin-top:20px;width:80%;}
-.result{background:rgba(255,255,255,0.1);padding:10px;margin:5px 0;border-radius:10px;}
-.result a{color:#fff;text-decoration:underline;}
+input {width:80%; padding:12px; margin:8px 0; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#fff; font-size:16px;}
+button {padding:12px 25px; border-radius:12px; background:linear-gradient(135deg,#ff6ec4,#7873f5); font-weight:bold; color:#fff; cursor:pointer; font-size:16px; transition:0.3s;}
+button:hover {transform:scale(1.05);}
+#resultados{margin-top:20px; width:80%;}
+.result{background:rgba(255,255,255,0.1); padding:12px; margin:6px 0; border-radius:12px;}
+.result a{color:#fff; text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -24,22 +24,27 @@ button:hover{transform:scale(1.05);}
 
 <script>
 async function pesquisar(nome){
-  const res=await fetch(`/api/pesquisar?nome=${encodeURIComponent(nome)}`);
+  const res = await fetch(`/api/pesquisar?nome=${encodeURIComponent(nome)}`);
   return res.json();
 }
 
-document.getElementById('pesquisarBtn').addEventListener('click',async()=>{
-  const termo=document.getElementById('pesquisaInput').value.trim();
-  if(!termo){alert('Digite algo'); return;}
-  const data=await pesquisar(termo);
-  const resultadosDiv=document.getElementById('resultados');
-  resultadosDiv.innerHTML='';
-  data.forEach(s=>{
-    const div=document.createElement('div');
-    div.className='result';
-    div.innerHTML=`<strong>${s.nome}</strong> (${s.jogo})<br>${s.descricao}<br>
-    <a href="/api/abrir?id=${s.id}" target="_blank">Abrir Script</a><br>
-    Loadstring: <code>${s.loadstring}</code>`;
+document.getElementById('pesquisarBtn').addEventListener('click', async ()=>{
+  const termo = document.getElementById('pesquisaInput').value.trim();
+  if(!termo){ alert('Digite algo'); return; }
+
+  const data = await pesquisar(termo);
+  const resultadosDiv = document.getElementById('resultados');
+  resultadosDiv.innerHTML = '';
+
+  data.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'result';
+    div.innerHTML = `
+      <strong>${s.nome}</strong> (${s.jogo})<br>
+      ${s.descricao}<br>
+      <a href="/api/abrir?id=${s.id}" target="_blank">Abrir Script</a><br>
+      Loadstring: <code>${s.loadstring}</code>
+    `;
     resultadosDiv.appendChild(div);
   });
 });

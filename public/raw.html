@@ -6,62 +6,16 @@
 <title>Raw Script | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(270deg, #ff6ec4, #7873f5, #42e695, #fcd440);
-  background-size: 800% 800%;
-  animation: gradientBG 25s ease infinite;
-  color: #ffffff;
-  text-align: center;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-@keyframes gradientBG {
-  0% {background-position:0% 50%}
-  50% {background-position:100% 50%}
-  100% {background-position:0% 50%}
-}
-textarea {
-  width: 80%;
-  min-height: 200px;
-  padding: 15px;
-  border-radius: 15px;
-  border: none;
-  font-family: monospace;
-  font-size: 16px;
-  margin-bottom: 20px;
-  background-color: rgba(0,0,0,0.6);
-  color: #ffffff;
-}
-button {
-  padding: 15px 30px;
-  border-radius: 15px;
-  background: linear-gradient(135deg, #ff6ec4, #7873f5);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 16px;
-  color: #fff;
-  transition: 0.3s;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-}
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-}
-#resultado {
-  margin-top: 20px;
-  font-family: monospace;
-  font-size: 16px;
-  color: #fff;
-}
+body {font-family:'Inter',sans-serif; background:#111; color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;}
+textarea {width:80%; min-height:200px; padding:15px; border-radius:15px; border:none; font-family:monospace; font-size:16px; margin-bottom:20px; background:rgba(0,0,0,0.6); color:#fff;}
+button {padding:15px 30px; border-radius:15px; background:linear-gradient(135deg,#ff6ec4,#7873f5); font-weight:bold; color:#fff; cursor:pointer; font-size:16px; transition:0.3s;}
+button:hover {transform:scale(1.05);}
+#resultado{margin-top:20px; font-family:monospace; color:#fff;}
 </style>
 </head>
 <body>
 
-<h1 class="text-3xl mb-6" style="text-shadow:2px 2px 12px #000;">Raw Script</h1>
+<h1>Raw Script</h1>
 <textarea id="scriptInput" placeholder="Digite seu script aqui..."></textarea>
 <br>
 <button id="botaoPublicar">Gerar Script</button>
