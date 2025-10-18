@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Raw Script</title>
+<title>Raw Script | Universal Blox</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 body {
@@ -11,10 +11,13 @@ body {
   background: linear-gradient(270deg, #ff6ec4, #7873f5, #42e695, #fcd440);
   background-size: 800% 800%;
   animation: gradientBG 25s ease infinite;
-  color: #ffffff; /* texto branco */
+  color: #ffffff;
   text-align: center;
   padding: 20px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 @keyframes gradientBG {
   0% {background-position:0% 50%}
@@ -30,8 +33,8 @@ textarea {
   font-family: monospace;
   font-size: 16px;
   margin-bottom: 20px;
-  background-color: rgba(0,0,0,0.6); /* fundo escuro para textarea */
-  color: #ffffff; /* texto branco */
+  background-color: rgba(0,0,0,0.6);
+  color: #ffffff;
 }
 button {
   padding: 15px 30px;
@@ -52,7 +55,7 @@ button:hover {
   margin-top: 20px;
   font-family: monospace;
   font-size: 16px;
-  color: #fff; /* resultado visível */
+  color: #fff;
 }
 </style>
 </head>
@@ -64,17 +67,34 @@ button:hover {
 <button id="botaoPublicar">Gerar Script</button>
 <div id="resultado"></div>
 
-<script src="scripts.js"></script>
 <script>
+// Função para publicar script via API Vercel
+async function publicarScript(content, nome, jogo, descricao){
+  const res = await fetch('/api/publicar', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({content, nome, jogo, descricao})
+  });
+  return res.json();
+}
+
+// Evento do botão
 document.getElementById('botaoPublicar').addEventListener('click', async ()=>{
   const script = document.getElementById('scriptInput').value.trim();
   if(!script){ alert('Digite algo!'); return; }
 
-  const data = await publicarScript(script, "Sem Nome", "Universal", "");
-  document.getElementById('resultado').innerHTML = `
-    Script ID: <strong>${data.id}</strong><br>
-    <a href="${data.url}" target="_blank" style="color:#fff;text-decoration:underline;">Abrir Script ${data.id}</a>
-  `;
+  try {
+    const data = await publicarScript(script, "Sem Nome", "Universal", "");
+    document.getElementById('resultado').innerHTML = `
+      Script ID: <strong>${data.id}</strong><br>
+      <a href="${data.url}" target="_blank" style="color:#fff;text-decoration:underline;">
+        Abrir Script ${data.id}
+      </a>
+    `;
+  } catch(err) {
+    console.error(err);
+    alert('Erro ao publicar o script.');
+  }
 });
 </script>
 
