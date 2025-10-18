@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "public/**/*", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/scripts/(.*)", "dest": "/api/scripts?id=$1" },
+    { "src": "/publicar", "dest": "/api/publicar" }
+  ]
+}

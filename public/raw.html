@@ -1,0 +1,12 @@
+<textarea id="scriptInput" rows="10"></textarea>
+<button id="botaoPublicar">Gerar Script</button>
+<div id="resultado"></div>
+<script src="scripts.js"></script>
+<script>
+document.getElementById('botaoPublicar').addEventListener('click', async ()=>{
+  const content = document.getElementById('scriptInput').value.trim();
+  if(!content){ alert('Digite algo!'); return; }
+  const data = await publicarScript(content, "Sem Nome", "Universal", "");
+  document.getElementById('resultado').innerHTML = `ID: ${data.id}<br><a href="${data.url}" target="_blank">Abrir Script</a>`;
+});
+</script>
