@@ -11,9 +11,10 @@ body {
   background: linear-gradient(270deg, #ff6ec4, #7873f5, #42e695, #fcd440);
   background-size: 800% 800%;
   animation: gradientBG 25s ease infinite;
-  color: white;
+  color: #ffffff; /* texto branco */
   text-align: center;
   padding: 20px;
+  min-height: 100vh;
 }
 @keyframes gradientBG {
   0% {background-position:0% 50%}
@@ -29,6 +30,8 @@ textarea {
   font-family: monospace;
   font-size: 16px;
   margin-bottom: 20px;
+  background-color: rgba(0,0,0,0.6); /* fundo escuro para textarea */
+  color: #ffffff; /* texto branco */
 }
 button {
   padding: 15px 30px;
@@ -37,21 +40,25 @@ button {
   font-weight: bold;
   cursor: pointer;
   font-size: 16px;
+  color: #fff;
   transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 button:hover {
   transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
 }
 #resultado {
   margin-top: 20px;
   font-family: monospace;
   font-size: 16px;
+  color: #fff; /* resultado visível */
 }
 </style>
 </head>
 <body>
 
-<h1 class="text-3xl mb-6">Raw Script</h1>
+<h1 class="text-3xl mb-6" style="text-shadow:2px 2px 12px #000;">Raw Script</h1>
 <textarea id="scriptInput" placeholder="Digite seu script aqui..."></textarea>
 <br>
 <button id="botaoPublicar">Gerar Script</button>
@@ -62,12 +69,11 @@ button:hover {
 document.getElementById('botaoPublicar').addEventListener('click', async ()=>{
   const script = document.getElementById('scriptInput').value.trim();
   if(!script){ alert('Digite algo!'); return; }
-  
-  // Publica o script
+
   const data = await publicarScript(script, "Sem Nome", "Universal", "");
   document.getElementById('resultado').innerHTML = `
     Script ID: <strong>${data.id}</strong><br>
-    <a href="${data.url}" target="_blank">Abrir Script ${data.id}</a>
+    <a href="${data.url}" target="_blank" style="color:#fff;text-decoration:underline;">Abrir Script ${data.id}</a>
   `;
 });
 </script>
